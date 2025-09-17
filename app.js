@@ -2,28 +2,38 @@ const $ = (id) => document.getElementById(id);
 const round = (n, d = 2) => Number.isFinite(n) ? Number(n.toFixed(d)) : 0;
 const currency = (n) => `$${round(n, 2).toLocaleString()}`;
 
-// SOD INSTALL
-function calcSod(sf) {
-  const sfOrdered = round(sf * 1.06, 0);
-  const materialCost = round(sfOrdered * 0.45);
-  const laborHours = round(sf / 150, 2);
+// CLEAR OUT PREP
+function calcPrep(sf, depthIn) {
+  const yards = round((sf * (depthIn / 12)) / 27, 2);
+  const dumpFee = round(yards * 75);
+  const laborHours = Math.max(round(yards, 2), 2.5);
   const laborCost = round(laborHours * 48);
-  const totalCost = materialCost + laborCost;
+  const totalCost = dumpFee + laborCost;
   const price = round(totalCost * 1.43);
-  const handoff = `Sod and Install - Premium Install:\n- ${laborHours} Hours\n- ${sf} square feet (order ${sfOrdered})`;
-  return { sfOrdered, materialCost, laborHours, laborCost, totalCost, price, handoff };
+  const handoff = `Haul Off of Dirt:\n- cost per yard is $75 (50 dump and 25 labor)\n- ${yards} yards`;
+  return { totalCost, price, handoff };
 }
 
-// TOPSOIL
-function calcTopsoil(sf, depthIn) {
-  const yards = round((sf * (depthIn / 12)) / 27, 2);
-  const materialCost = round(yards * 32);
-  const laborHours = round(yards * 0.5, 2);
-  const laborCost = round(laborHours * 48);
-  const totalCost = materialCost + laborCost;
-  const price = round(totalCost * 1.43);
-  const handoff = `Top Soil:\n- ${laborHours} Hours\n- ${yards} yards at ${depthIn}"`;
-  return { yards, materialCost, laborHours, laborCost, totalCost, price, handoff };
+// SOD INSTALL + TOPSOIL
+function calcSod(sf, topsoilDepth) {
+  const sfOrdered = round(sf * 1.06, 0);
+  const sodMaterialCost = round(sfOrdered * 0.45);
+  const sodLaborHours = round(sf / 150, 2);
+  const sodLaborCost = round(sodLaborHours * 48);
+  const sodTotalCost = sodMaterialCost + sodLaborCost;
+
+  const topsoilYards = round((sf * (topsoilDepth / 12)) / 27, 2);
+  const topsoilMaterialCost = round(topsoilYards * 32);
+  const topsoilLaborHours = round(topsoilYards * 0.5, 2);
+  const topsoilLaborCost = round(topsoilLaborHours * 48);
+  const topsoilTotalCost = topsoilMaterialCost + topsoilLaborCost;
+
+  const combinedCost = round(sodTotalCost + topsoilTotalCost);
+  const price = round(combinedCost * 1.43);
+
+  const handoff = `Sod and Install - Premium Install:\n- ${sodLaborHours} Hours\n- ${sf} square feet (order ${sfOrdered})\nTop Soil:\n- ${topsoilLaborHours} Hours\n- ${topsoilYards} yards at ${topsoilDepth}"`;
+
+  return { combinedCost, price, handoff };
 }
 
 // SPRINKLER INSTALL
@@ -46,31 +56,24 @@ function calcConcrete(sf, thick) {
   const cy = round((sf * thick) / 324, 2);
   const soilLaborHours = round(cy * 0.6, 2);
   const soilLaborCost = round(soilLaborHours * 48);
+
   const roadLooseCY = round(cy * 1.2, 2);
   const roadMat = round(roadLooseCY * 35);
   const roadLab = round(roadLooseCY * 48);
   const roadEq = 250;
   const roadTotal = roadMat + roadLab + roadEq;
+
   const concOrderedCY = round(cy * 1.2, 2);
   const concMat = round(concOrderedCY * 225);
   const flatwork = Math.max(1500, round(sf * 1.75));
   const concTotal = concMat + flatwork;
+
   const combinedCost = soilLaborCost + roadTotal + concTotal;
   const price = round(combinedCost * 1.43);
-  const handoff = `Concrete Installation:\n- ${soilLaborHours} Hours\n- ${roadLooseCY} yard road base at ${thick}" thick\n- ${concOrderedCY} yards concrete (${round(concMat / 225, 2)} budget)\n- ${currency(combinedCost)} budget`;
-  return { combinedCost, price, handoff };
-}
 
-// CLEAR OUT PREP
-function calcPrep(sf, depthIn) {
-  const yards = round((sf * (depthIn / 12)) / 27, 2);
-  const dumpFee = round(yards * 75);
-  const laborHours = Math.max(round(yards, 2), 2.5);
-  const laborCost = round(laborHours * 48);
-  const totalCost = dumpFee + laborCost;
-  const price = round(totalCost * 1.43);
-  const handoff = `Haul Off of Dirt:\n- cost per yard is $75 (50 dump and 25 labor)\n- ${yards} yards`;
-  return { totalCost, price, handoff };
+  const handoff = `Concrete Installation:\n- ${soilLaborHours} Hours\n- ${roadLooseCY} yard road base at ${thick}" thick\n- ${concOrderedCY} yards concrete (${round(concMat / 225, 2)} budget)\n- ${currency(combinedCost)} budget`;
+
+  return { combinedCost, price, handoff };
 }
 
 // BOULDER WALL
@@ -88,7 +91,55 @@ function calcBoulderWall(length, height, fillYds) {
   return { totalCost, price, handoff };
 }
 
-// SERVICE WORKER
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
-}
+// EVENT LISTENERS
+window.addEventListener('DOMContentLoaded', () => {
+  // Clear Out Prep
+  $('calc-prep').onclick = () => {
+    const sf = Number($('prep-sf').value || 0);
+    const depth = Number($('prep-depth').value || 0);
+    const r = calcPrep(sf, depth);
+    $('nums-prep').innerHTML = `<span class="stat">Cost: <b>${currency(r.totalCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
+    $('out-prep').textContent = r.handoff;
+  };
+  $('copy-prep').onclick = () => navigator.clipboard.writeText($('out-prep').textContent);
+
+  // Sod + Topsoil
+  $('calc-sod').onclick = () => {
+    const sf = Number($('sod-sf').value || 0);
+    const depth = Number($('topsoil-depth').value || 0);
+    const r = calcSod(sf, depth);
+    $('nums-sod').innerHTML = `<span class="stat">Cost: <b>${currency(r.combinedCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
+    $('out-sod').textContent = r.handoff;
+  };
+  $('copy-sod').onclick = () => navigator.clipboard.writeText($('out-sod').textContent);
+
+  // Sprinkler
+  $('calc-sprinkler').onclick = () => {
+    const z = Number($('sp-zones').value || 0);
+    const c = Number($('sp-controllers').value || 0);
+    const b = Number($('sp-boxes').value || 0);
+    const d = Number($('sp-drip').value || 0);
+    const t = Number($('sp-tunnels').value || 0);
+    const r = calcSprinkler(z, c, b, d, t);
+    $('nums-sprinkler').innerHTML = `<span class="stat">Cost: <b>${currency(r.totalCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
+    $('out-sprinkler').textContent = r.handoff;
+  };
+  $('copy-sprinkler').onclick = () => navigator.clipboard.writeText($('out-sprinkler').textContent);
+
+  // Concrete
+  $('calc-concrete').onclick = () => {
+    const sf = Number($('conc-sf').value || 0);
+    const thick = Number($('conc-thick').value || 0);
+    const r = calcConcrete(sf, thick);
+    $('nums-concrete').innerHTML = `<span class="stat">Cost: <b>${currency(r.combinedCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
+    $('out-concrete').textContent = r.handoff;
+  };
+  $('copy-concrete').onclick = () => navigator.clipboard.writeText($('out-concrete').textContent);
+
+  // Boulder Wall
+  $('calc-bw').onclick = () => {
+    const len = Number($('bw-length').value || 0);
+    const ht = Number($('bw-height').value || 0);
+    const fill = Number($('bw-fill').value || 0);
+    const r = calcBoulderWall(len, ht, fill);
+    $('nums-bw').innerHTML
