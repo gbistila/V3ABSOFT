@@ -3,7 +3,6 @@ const round = (n, d = 2) => Number.isFinite(n) ? Number(n.toFixed(d)) : 0;
 const currency = (n) => `$${round(n, 2).toLocaleString()}`;
 
 // --- CALCULATORS ---
-
 function calcPrep(sf, depthIn) {
   const yards = round((sf * (depthIn / 12)) / 27, 2);
   const dumpFee = round(yards * 75);
@@ -88,30 +87,30 @@ function calcBoulderWall(length, height, fillYds) {
   return { totalCost, price, handoff };
 }
 
-// --- EVENT LISTENERS ---
+// --- EVENT WIRING ---
 window.addEventListener('DOMContentLoaded', () => {
   // Clear Out Prep
-  $('calc-prep').onclick = () => {
+  $('calc-prep').addEventListener('click', () => {
     const sf = Number($('prep-sf').value || 0);
     const depth = Number($('prep-depth').value || 0);
     const r = calcPrep(sf, depth);
     $('nums-prep').innerHTML = `<span class="stat">Cost: <b>${currency(r.totalCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
     $('out-prep').textContent = r.handoff;
-  };
-  $('copy-prep').onclick = () => navigator.clipboard.writeText($('out-prep').textContent);
+  });
+  $('copy-prep').addEventListener('click', () => navigator.clipboard.writeText($('out-prep').textContent));
 
   // Sod + Topsoil
-  $('calc-sod').onclick = () => {
+  $('calc-sod').addEventListener('click', () => {
     const sf = Number($('sod-sf').value || 0);
     const depth = Number($('topsoil-depth').value || 0);
     const r = calcSod(sf, depth);
     $('nums-sod').innerHTML = `<span class="stat">Cost: <b>${currency(r.combinedCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
     $('out-sod').textContent = r.handoff;
-  };
-  $('copy-sod').onclick = () => navigator.clipboard.writeText($('out-sod').textContent);
+  });
+  $('copy-sod').addEventListener('click', () => navigator.clipboard.writeText($('out-sod').textContent));
 
   // Sprinkler
-  $('calc-sprinkler').onclick = () => {
+  $('calc-sprinkler').addEventListener('click', () => {
     const z = Number($('sp-zones').value || 0);
     const c = Number($('sp-controllers').value || 0);
     const b = Number($('sp-boxes').value || 0);
@@ -120,24 +119,23 @@ window.addEventListener('DOMContentLoaded', () => {
     const r = calcSprinkler(z, c, b, d, t);
     $('nums-sprinkler').innerHTML = `<span class="stat">Cost: <b>${currency(r.totalCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
     $('out-sprinkler').textContent = r.handoff;
-  };
-  $('copy-sprinkler').onclick = () => navigator.clipboard.writeText($('out-sprinkler').textContent);
+  });
+  $('copy-sprinkler').addEventListener('click', () => navigator.clipboard.writeText($('out-sprinkler').textContent));
 
   // Concrete
-  $('calc-concrete').onclick = () => {
+  $('calc-concrete').addEventListener('click', () => {
     const sf = Number($('conc-sf').value || 0);
     const thick = Number($('conc-thick').value || 0);
     const r = calcConcrete(sf, thick);
     $('nums-concrete').innerHTML = `<span class="stat">Cost: <b>${currency(r.combinedCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
     $('out-concrete').textContent = r.handoff;
-  };
-  $('copy-concrete').onclick = () => navigator.clipboard.writeText($('out-concrete').textContent);
+  });
+  $('copy-concrete').addEventListener('click', () => navigator.clipboard.writeText($('out-concrete').textContent));
 
   // Boulder Wall
-  $('calc-bw').onclick = () => {
+  $('calc-bw').addEventListener('click', () => {
     const len = Number($('bw-length').value || 0);
     const ht = Number($('bw-height').value || 0);
     const fill = Number($('bw-fill').value || 0);
     const r = calcBoulderWall(len, ht, fill);
-    $('nums-bw').innerHTML = `<span class="stat">Cost: <b>${currency(r.totalCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
-    $('out-bw').textContent = r.h
+    $('nums-bw').inner
