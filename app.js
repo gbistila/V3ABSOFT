@@ -133,9 +133,18 @@ window.addEventListener('DOMContentLoaded', () => {
   $('copy-concrete').addEventListener('click', () => navigator.clipboard.writeText($('out-concrete').textContent));
 
   // Boulder Wall
-  $('calc-bw').addEventListener('click', () => {
-    const len = Number($('bw-length').value || 0);
-    const ht = Number($('bw-height').value || 0);
-    const fill = Number($('bw-fill').value || 0);
-    const r = calcBoulderWall(len, ht, fill);
-    $('nums-bw').inner
+$('calc-bw').addEventListener('click', () => {
+  const len = Number($('bw-length').value || 0);
+  const ht = Number($('bw-height').value || 0);
+  const fill = Number($('bw-fill').value || 0);
+  const r = calcBoulderWall(len, ht, fill);
+  $('nums-bw').innerHTML = `
+    <span class="stat">Cost: <b>${currency(r.totalCost)}</b></span>
+    <span class="stat">Price: <b>${currency(r.price)}</b></span>
+  `;
+  $('out-bw').textContent = r.handoff;
+});
+
+$('copy-bw').addEventListener('click', () => {
+  navigator.clipboard.writeText($('out-bw').textContent);
+});
