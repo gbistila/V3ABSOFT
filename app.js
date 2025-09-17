@@ -2,7 +2,8 @@ const $ = (id) => document.getElementById(id);
 const round = (n, d = 2) => Number.isFinite(n) ? Number(n.toFixed(d)) : 0;
 const currency = (n) => `$${round(n, 2).toLocaleString()}`;
 
-// CLEAR OUT PREP
+// --- CALCULATORS ---
+
 function calcPrep(sf, depthIn) {
   const yards = round((sf * (depthIn / 12)) / 27, 2);
   const dumpFee = round(yards * 75);
@@ -14,7 +15,6 @@ function calcPrep(sf, depthIn) {
   return { totalCost, price, handoff };
 }
 
-// SOD INSTALL + TOPSOIL
 function calcSod(sf, topsoilDepth) {
   const sfOrdered = round(sf * 1.06, 0);
   const sodMaterialCost = round(sfOrdered * 0.45);
@@ -36,7 +36,6 @@ function calcSod(sf, topsoilDepth) {
   return { combinedCost, price, handoff };
 }
 
-// SPRINKLER INSTALL
 function calcSprinkler(zones, controllers, boxes, dripLines, tunnels) {
   const zoneCost = zones * 200;
   const controllerCost = controllers > 0 ? controllers * 185 : 0;
@@ -51,7 +50,6 @@ function calcSprinkler(zones, controllers, boxes, dripLines, tunnels) {
   return { totalCost, price, handoff };
 }
 
-// CONCRETE INSTALL
 function calcConcrete(sf, thick) {
   const cy = round((sf * thick) / 324, 2);
   const soilLaborHours = round(cy * 0.6, 2);
@@ -76,7 +74,6 @@ function calcConcrete(sf, thick) {
   return { combinedCost, price, handoff };
 }
 
-// BOULDER WALL
 function calcBoulderWall(length, height, fillYds) {
   const faceSF = round(length * height, 2);
   const laborHours = round((faceSF * 0.75) / 10, 2);
@@ -91,7 +88,7 @@ function calcBoulderWall(length, height, fillYds) {
   return { totalCost, price, handoff };
 }
 
-// EVENT LISTENERS
+// --- EVENT LISTENERS ---
 window.addEventListener('DOMContentLoaded', () => {
   // Clear Out Prep
   $('calc-prep').onclick = () => {
@@ -142,4 +139,5 @@ window.addEventListener('DOMContentLoaded', () => {
     const ht = Number($('bw-height').value || 0);
     const fill = Number($('bw-fill').value || 0);
     const r = calcBoulderWall(len, ht, fill);
-    $('nums-bw').innerHTML
+    $('nums-bw').innerHTML = `<span class="stat">Cost: <b>${currency(r.totalCost)}</b></span><span class="stat">Price: <b>${currency(r.price)}</b></span>`;
+    $('out-bw').textContent = r.h
