@@ -9,7 +9,139 @@
   <meta name="theme-color" content="#0f172a" />
 </head>
 <body>
-  <!-- Your full HTML layout goes here (from previous response) -->
-  <script src="app.js"></script>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Alpine Bid App</h1>
+          <div class="subtitle">Field-accurate estimating with copy-ready operational handoff</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- SOD INSTALLATION -->
+    <section class="card">
+      <div class="head">
+        <h2>🌱 Sod installation</h2>
+        <span class="pill">Markup × 1.43</span>
+      </div>
+      <div class="row">
+        <div class="col-4">
+          <label>Square feet</label>
+          <input type="number" id="sod-sf" min="0" step="1" />
+        </div>
+        <div class="col-4">
+          <label>Include topsoil?</label>
+          <select id="sod-topsoil-toggle">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="col-4" id="topsoil-depth-wrap" style="display:none;">
+          <label>Topsoil depth (inches)</label>
+          <input type="number" id="topsoil-depth" min="1" step="0.25" />
+        </div>
+      </div>
+      <div class="group">
+        <button class="btn" id="calc-sod">Calculate</button>
+        <button class="btn secondary" id="copy-sod">Copy handoff</button>
+      </div>
+      <div class="numbers" id="nums-sod"></div>
+      <div class="divider"></div>
+      <div class="head"><strong>Operational handoff</strong></div>
+      <div class="out" id="out-sod"></div>
+    </section>
+
+    <!-- SPRINKLER INSTALLATION -->
+    <section class="card">
+      <div class="head">
+        <h2>💧 Sprinkler installation</h2>
+        <span class="pill">Markup × 1.43</span>
+      </div>
+      <div class="row">
+        <div class="col-3"><label>Zones</label><input type="number" id="sp-zones" min="0" /></div>
+        <div class="col-3"><label>Controllers</label><input type="number" id="sp-controllers" min="0" /></div>
+        <div class="col-3"><label>Boxes</label><input type="number" id="sp-boxes" min="0" /></div>
+        <div class="col-3"><label>Drip lines</label><input type="number" id="sp-drip" min="0" /></div>
+        <div class="col-3"><label>Tunnels</label><input type="number" id="sp-tunnels" min="0" /></div>
+      </div>
+      <div class="group">
+        <button class="btn" id="calc-sprinkler">Calculate</button>
+        <button class="btn secondary" id="copy-sprinkler">Copy handoff</button>
+      </div>
+      <div class="numbers" id="nums-sprinkler"></div>
+      <div class="divider"></div>
+      <div class="head"><strong>Operational handoff</strong></div>
+      <div class="out" id="out-sprinkler"></div>
+    </section>
+
+    <!-- CONCRETE INSTALLATION -->
+    <section class="card">
+      <div class="head">
+        <h2>🧱 Concrete installation</h2>
+        <span class="pill">Markup × 1.43</span>
+      </div>
+      <div class="row">
+        <div class="col-6"><label>Square feet</label><input type="number" id="conc-sf" min="0" /></div>
+        <div class="col-6"><label>Thickness (inches)</label><input type="number" id="conc-thick" min="1" step="0.25" /></div>
+      </div>
+      <div class="group">
+        <button class="btn" id="calc-concrete">Calculate</button>
+        <button class="btn secondary" id="copy-concrete">Copy handoff</button>
+      </div>
+      <div class="numbers" id="nums-concrete"></div>
+      <div class="divider"></div>
+      <div class="head"><strong>Operational handoff</strong></div>
+      <div class="out" id="out-concrete"></div>
+    </section>
+
+    <!-- CLEAR OUT PREP -->
+    <section class="card">
+      <div class="head">
+        <h2>🚜 Clear out prep & grading</h2>
+        <span class="pill">Markup × 1.43</span>
+      </div>
+      <div class="row">
+        <div class="col-6"><label>Square feet</label><input type="number" id="prep-sf" min="0" /></div>
+        <div class="col-6"><label>Depth (inches)</label><input type="number" id="prep-depth" min="0.25" step="0.25" /></div>
+      </div>
+      <div class="group">
+        <button class="btn" id="calc-prep">Calculate</button>
+        <button class="btn secondary" id="copy-prep">Copy handoff</button>
+      </div>
+      <div class="numbers" id="nums-prep"></div>
+      <div class="divider"></div>
+      <div class="head"><strong>Operational handoff</strong></div>
+      <div class="out" id="out-prep"></div>
+    </section>
+
+    <!-- BOULDER WALL -->
+    <section class="card">
+      <div class="head">
+        <h2>🪨 Boulder wall installation</h2>
+        <span class="pill">Markup × 1.43</span>
+      </div>
+      <div class="row">
+        <div class="col-4"><label>Length (LF)</label><input type="number" id="bw-length" min="0" /></div>
+        <div class="col-4"><label>Height (FT)</label><input type="number" id="bw-height" min="0" step="0.5" /></div>
+        <div class="col-4"><label>Fill yards (CY)</label><input type="number" id="bw-fill" min="0" step="0.25" /></div>
+      </div>
+      <div class="group">
+        <button class="btn" id="calc-bw">Calculate</button>
+        <button class="btn secondary" id="copy-bw">Copy handoff</button>
+      </div>
+      <div class="numbers" id="nums-bw"></div>
+      <div class="divider"></div>
+      <div class="head"><strong>Operational handoff</strong></div>
+      <div class="out" id="out-bw"></div>
+    </section>
+
+  </main>
+
+  <script src="app.js" defer></script>
 </body>
 </html>
